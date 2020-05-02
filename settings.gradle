@@ -1,0 +1,2 @@
+rootProject.name='Rentage_Admin'
+include ':app'
