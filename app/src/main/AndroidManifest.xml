@@ -9,7 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".acitvities.CategoriesActivity" />
+        <activity android:name=".acitvities.OrdersActivity" />
+        <activity android:name=".acitvities.ServicesActivity" />
+        <activity android:name=".acitvities.ManageUserActivity" />
+        <activity android:name=".acitvities.MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
