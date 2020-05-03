@@ -6,6 +6,8 @@ public class CarServiceModel {
     double price;
     String description;
 
+    public CarServiceModel(){}
+
 
     public CarServiceModel(String id, String title, double price, String description) {
         this.id = id;

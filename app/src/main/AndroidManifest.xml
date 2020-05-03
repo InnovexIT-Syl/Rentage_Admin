@@ -11,6 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
+        <activity android:name=".acitvities.AddServiceActivity"></activity>
         <activity android:name=".acitvities.AddCategory" />
         <activity android:name=".acitvities.CategoriesActivity" />
         <activity android:name=".acitvities.OrdersActivity" />

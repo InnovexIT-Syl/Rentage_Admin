@@ -20,7 +20,7 @@ public class CarServiceAdapter extends RecyclerView.Adapter<CarServiceAdapter.My
     private Context context;
     private List<CarServiceModel> carServiceModelList;
 
-    CarServiceAdapter(Context context, List<CarServiceModel> carServiceModelList){
+    public CarServiceAdapter(Context context, List<CarServiceModel> carServiceModelList){
         this.context = context;
         this.carServiceModelList = carServiceModelList;
     }
@@ -36,7 +36,7 @@ public class CarServiceAdapter extends RecyclerView.Adapter<CarServiceAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.title.setText(carServiceModelList.get(position).getTitle());
-        holder.price.setText("AED" + carServiceModelList.get(position).getPrice());
+        holder.price.setText("AED " + carServiceModelList.get(position).getPrice());
         holder.description.setText(carServiceModelList.get(position).getDescription());
     }
 
