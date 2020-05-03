@@ -1,16 +1,16 @@
 package com.example.rentage_admin.models;
 
-public class ServiceModel {
+public class HelicopterServiceModel {
     String id;
     String title;
     double price;
-    String type;
+    String description;
 
-    public ServiceModel(String id, String title, double price, String type) {
+    public HelicopterServiceModel(String id, String title, double price, String description) {
         this.id = id;
         this.title = title;
         this.price = price;
-        this.type = type;
+        this.description = description;
     }
 
     public String getId() {
@@ -37,11 +37,11 @@ public class ServiceModel {
         this.price = price;
     }
 
-    public String getType() {
-        return type;
+    public String getDescription() {
+        return description;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
