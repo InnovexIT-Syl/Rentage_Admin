@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.rentage_admin.R;
-import com.example.rentage_admin.models.CategoryModel;
+import com.example.rentage_admin.models.CarServiceModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -95,10 +95,10 @@ public class AddServiceActivity extends AppCompatActivity {
                                     Uri downloadUri = uriTask.getResult();
 
                                     //getting image url
-                                    CategoryModel categoryModel = new CategoryModel(key, description, title,
-                                            downloadUri.toString());
+                                    CarServiceModel carServiceModel = new CarServiceModel(key, description, title,
+                                            downloadUri.toString(),price);
 
-                                    dbRef.setValue(categoryModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    dbRef.setValue(carServiceModel).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             Intent intent = new Intent(getApplicationContext(),

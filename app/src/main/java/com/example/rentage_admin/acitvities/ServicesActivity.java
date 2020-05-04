@@ -12,9 +12,7 @@ import android.widget.Toast;
 
 import com.example.rentage_admin.R;
 import com.example.rentage_admin.adapters.CarServiceAdapter;
-import com.example.rentage_admin.adapters.CategoryAdapter;
 import com.example.rentage_admin.models.CarServiceModel;
-import com.example.rentage_admin.models.CategoryModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

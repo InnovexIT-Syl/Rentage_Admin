@@ -2,18 +2,33 @@ package com.example.rentage_admin.models;
 
 public class CarServiceModel {
     String id;
-    String title;
-    double price;
     String description;
+    String title;
+    String imageUrl;
+    String price;
 
-    public CarServiceModel(){}
 
+    public CarServiceModel() {
+    }
 
-    public CarServiceModel(String id, String title, double price, String description) {
+    public CarServiceModel(String id, String description, String title, String imageUrl, String price) {
         this.id = id;
-        this.title = title;
-        this.price = price;
         this.description = description;
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.price = price;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getId() {
@@ -24,22 +39,6 @@ public class CarServiceModel {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -47,4 +46,17 @@ public class CarServiceModel {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
 }
+
