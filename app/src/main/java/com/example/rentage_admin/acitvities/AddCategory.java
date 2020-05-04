@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -44,6 +46,7 @@ public class AddCategory extends AppCompatActivity {
     // storage
     private StorageReference storageReference;
     private Uri image_uri;
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +64,7 @@ public class AddCategory extends AppCompatActivity {
 
         storageReference = FirebaseStorage.getInstance().getReference(); // firebase storage reference
 
-
+        progressDialog = new ProgressDialog(this);
         //storage permission
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -84,6 +87,10 @@ public class AddCategory extends AppCompatActivity {
                 StorageReference reference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(image_uri));
 
                 if (image_uri != null) {
+                    progressDialog.setMessage("Uploading Category..");
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.show();
+
                     reference.putFile(image_uri)
                             .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
@@ -92,31 +99,33 @@ public class AddCategory extends AppCompatActivity {
                                     Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
                                     while (!uriTask.isSuccessful()) ;
                                     Uri downloadUri = uriTask.getResult();
+                                   if (uriTask.isSuccessful()){
+                                       CategoryModel categoryModel = new CategoryModel(key, description, title,
+                                               downloadUri.toString());
 
-                                    //getting image url
-                                    CategoryModel categoryModel = new CategoryModel(key, description, title,
-                                            downloadUri.toString());
+                                       dbRef.setValue(categoryModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                           @Override
+                                           public void onSuccess(Void aVoid) {
+                                               progressDialog.dismiss();
+                                               Intent intent = new Intent(getApplicationContext(),
+                                                       ServicesActivity.class);
 
-                                    dbRef.setValue(categoryModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Intent intent = new Intent(getApplicationContext(),
-                                                    ServicesActivity.class);
-                                            intent.putExtra("category", "Manage Category");
-                                            startActivity(intent);
-                                            Toast.makeText(AddCategory.this, "Data uploaded successfully",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(AddCategory.this, "Data upload failed!" + e.toString(),
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                               intent.putExtra("category", "Manage Category");
+                                               startActivity(intent);
+                                               Toast.makeText(AddCategory.this, "Data uploaded successfully",
+                                                       Toast.LENGTH_SHORT).show();
+                                           }
+                                       }).addOnFailureListener(new OnFailureListener() {
+                                           @Override
+                                           public void onFailure(@NonNull Exception e) {
+                                               progressDialog.dismiss();
+                                               Toast.makeText(AddCategory.this, "Data upload failed!" + e.toString(),
+                                                       Toast.LENGTH_SHORT).show();
+                                           }
+                                       });
+                                   }
 
-
-                                    Toast.makeText(AddCategory.this, "Profile updated successfully..", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AddCategory.this, "Category added successfully..", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -125,7 +134,13 @@ public class AddCategory extends AppCompatActivity {
                                     // Handle unsuccessful uploads
                                     Toast.makeText(AddCategory.this, "" + exception.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
-                            });
+                            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressDialog.setMessage("Uploaded " + (int) progress + " %");
+                        }
+                    });
                 }
 
 

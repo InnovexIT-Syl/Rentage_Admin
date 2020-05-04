@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,6 +28,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -35,7 +37,7 @@ public class AddServiceActivity extends AppCompatActivity {
     EditText titleService, descService, priceService;
     DatabaseReference databaseReference;
     String title, description, price;
-    Button submitButton,chooseImage;
+    Button submitButton, chooseImage;
     String storagePermission[];
     ImageView showImage;
 
@@ -44,6 +46,7 @@ public class AddServiceActivity extends AppCompatActivity {
     // storage
     private StorageReference storageReference;
     private Uri image_uri;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +63,7 @@ public class AddServiceActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         storageReference = FirebaseStorage.getInstance().getReference(); // firebase storage reference
-
+        progressDialog = new ProgressDialog(this);
 
         //storage permission
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -85,22 +88,27 @@ public class AddServiceActivity extends AppCompatActivity {
                 StorageReference reference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(image_uri));
 
                 if (image_uri != null) {
-                    reference.putFile(image_uri)
-                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    // Get a URL to the uploaded content
-                                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                                    while (!uriTask.isSuccessful()) ;
-                                    Uri downloadUri = uriTask.getResult();
+                    progressDialog.setMessage("Uploading services..");
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.show();
+                }
+                reference.putFile(image_uri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                // Get a URL to the uploaded content
+                                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                                while (!uriTask.isSuccessful()) ;
+                                Uri downloadUri = uriTask.getResult();
 
-                                    //getting image url
+                                if (uriTask.isSuccessful()) {
                                     CarServiceModel carServiceModel = new CarServiceModel(key, description, title,
-                                            downloadUri.toString(),price);
+                                            downloadUri.toString(), price);
 
                                     dbRef.setValue(carServiceModel).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
+                                            progressDialog.dismiss();
                                             Intent intent = new Intent(getApplicationContext(),
                                                     ServicesActivity.class);
                                             intent.putExtra("category", "Manage Category");
@@ -111,6 +119,7 @@ public class AddServiceActivity extends AppCompatActivity {
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
+                                            progressDialog.dismiss();
                                             Toast.makeText(AddServiceActivity.this, "Data upload failed!" + e.toString(),
                                                     Toast.LENGTH_SHORT).show();
                                         }
@@ -119,17 +128,21 @@ public class AddServiceActivity extends AppCompatActivity {
 
                                     Toast.makeText(AddServiceActivity.this, "Profile updated successfully..", Toast.LENGTH_SHORT).show();
                                 }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    // Handle unsuccessful uploads
-                                    Toast.makeText(AddServiceActivity.this, "" + exception.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
-
-
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle unsuccessful uploads
+                                Toast.makeText(AddServiceActivity.this, "" + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                        progressDialog.setMessage("Uploaded " + (int) progress + " %");
+                    }
+                });
 
             }
         });
