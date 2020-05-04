@@ -9,17 +9,12 @@ public class CategoryModel {
 
     public CategoryModel() {
     }
+
     public CategoryModel(String id, String description, String title, String imageUrl) {
         this.id = id;
         this.description = description;
         this.title = title;
         this.imageUrl = imageUrl;
-    }
-
-    public CategoryModel(String id, String description, String title) {
-        this.id = id;
-        this.description = description;
-        this.title = title;
     }
 
     public String getId() {
