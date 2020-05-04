@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
                 String e = email.getText().toString();
                 String p = password.getText().toString();
 
-                if (e.equals("rentageproject@gmail.com") && p.equals("123456")) {
+                if (e.equals("admin@gmail.com") && p.equals("123456")) {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 }
