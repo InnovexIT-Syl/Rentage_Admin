@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/itemCard"
@@ -48,7 +49,7 @@
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:overScrollMode="never"
+                android:overScrollMode="ifContentScrolls"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:text="description is there"

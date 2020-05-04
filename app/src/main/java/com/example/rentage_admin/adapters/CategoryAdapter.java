@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.rentage_admin.R;
@@ -38,6 +40,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.title.setText(categoryModelList.get(position).getTitle());
         holder.description.setText(categoryModelList.get(position).getDescription());
+        holder.categoryCard.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -48,10 +57,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView title, price, description;
         ImageView itemImage;
+        CardView categoryCard;
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.cateTitle);
             description = itemView.findViewById(R.id.cateDescription);
+            categoryCard = itemView.findViewById(R.id.cateCard);
         }
     }
 }

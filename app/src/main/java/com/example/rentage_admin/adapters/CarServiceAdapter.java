@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.rentage_admin.R;
@@ -38,6 +40,13 @@ public class CarServiceAdapter extends RecyclerView.Adapter<CarServiceAdapter.My
         holder.title.setText(carServiceModelList.get(position).getTitle());
         holder.price.setText("AED " + carServiceModelList.get(position).getPrice());
         holder.description.setText(carServiceModelList.get(position).getDescription());
+        holder.itemCard.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(context, "Pressed", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -48,12 +57,16 @@ public class CarServiceAdapter extends RecyclerView.Adapter<CarServiceAdapter.My
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView title, price, description;
         ImageView itemImage;
+        CardView itemCard;
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.itemTitle);
             price = itemView.findViewById(R.id.price);
             description = itemView.findViewById(R.id.description);
             itemImage = itemView.findViewById(R.id.itemImage);
+            itemCard = itemView.findViewById(R.id.itemCard);
+
+
 
         }
     }
