@@ -14,15 +14,16 @@ public class LoginActivity extends AppCompatActivity {
     EditText email;
     EditText password;
     Button submit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-         email = findViewById(R.id.email);
-         password = findViewById(R.id.password);
+        email = findViewById(R.id.email);
+        password = findViewById(R.id.password);
 
-         submit = findViewById(R.id.submit);
+        submit = findViewById(R.id.submit);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,8 +31,8 @@ public class LoginActivity extends AppCompatActivity {
                 String e = email.getText().toString();
                 String p = password.getText().toString();
 
-                if (e.equals("rentageproject@gmail.com") && p.equals("123456")){
-                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                if (e.equals("rentageproject@gmail.com") && p.equals("123456")) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 }
             }
