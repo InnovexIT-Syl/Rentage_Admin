@@ -4,13 +4,13 @@ public class OrderModel {
     String id;
     String serviceTitle;
     String orderDate;
-    String orederStatus;
+    String orderStatus;
 
-    public OrderModel(String id, String serviceTitle, String orderDate, String orederStatus) {
+    public OrderModel(String id, String serviceTitle, String orderDate, String orderStatus) {
         this.id = id;
         this.serviceTitle = serviceTitle;
         this.orderDate = orderDate;
-        this.orederStatus = orederStatus;
+        this.orderStatus = orderStatus;
     }
 
     public String getId() {
@@ -37,11 +37,11 @@ public class OrderModel {
         this.orderDate = orderDate;
     }
 
-    public String getOrederStatus() {
-        return orederStatus;
+    public String getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setOrederStatus(String orederStatus) {
-        this.orederStatus = orederStatus;
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

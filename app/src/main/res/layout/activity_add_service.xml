@@ -35,7 +35,21 @@
         android:hint="Description"
         tools:layout_editor_absoluteX="47dp"
         tools:layout_editor_absoluteY="160dp" />
+    <Button
+        android:id="@+id/chooseImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorPrimary"
+        android:layout_gravity="center_horizontal"
+        android:text="Choose Image"/>
 
+    <ImageView
+        android:id="@+id/showImage"
+        android:layout_width="190dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal" />
     <Button
         android:id="@+id/serviceBtn"
         android:layout_width="wrap_content"
@@ -44,4 +58,5 @@
         android:background="@color/colorPrimary"
         android:layout_gravity="center_horizontal"
         android:text="Submit"/>
+
 </LinearLayout>
