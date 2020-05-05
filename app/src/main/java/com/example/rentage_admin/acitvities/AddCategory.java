@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,6 +18,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.rentage_admin.R;
@@ -37,13 +39,15 @@ public class AddCategory extends AppCompatActivity {
     String title, description;
 
     Button submitButton,chooseImage;
-    String storagePermission[];
+    String[] storagePermission;
     ImageView showImage;
     private static final int STORAGE_REQUEST_CODE = 400;
     private static final int IMAGE_PICK_GALLERY_CODE = 1000;
     // storage
     private StorageReference storageReference;
     private Uri image_uri;
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +62,7 @@ public class AddCategory extends AppCompatActivity {
         chooseImage = findViewById(R.id.chooseImageButton);
         showImage = findViewById(R.id.showImage);
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        progressDialog = new ProgressDialog(this);
 
         storageReference = FirebaseStorage.getInstance().getReference(); // firebase storage reference
 
@@ -80,6 +85,11 @@ public class AddCategory extends AppCompatActivity {
 
                 final DatabaseReference dbRef = databaseReference.child("Categories").push();
                 final String key = dbRef.getKey();
+
+
+                progressDialog.setMessage("Uploading data..");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
 
                 StorageReference reference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(image_uri));
 
@@ -106,12 +116,14 @@ public class AddCategory extends AppCompatActivity {
                                             startActivity(intent);
                                             Toast.makeText(AddCategory.this, "Data uploaded successfully",
                                                     Toast.LENGTH_SHORT).show();
+                                            progressDialog.dismiss();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             Toast.makeText(AddCategory.this, "Data upload failed!" + e.toString(),
                                                     Toast.LENGTH_SHORT).show();
+                                            progressDialog.dismiss();
                                         }
                                     });
 

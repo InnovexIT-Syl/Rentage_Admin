@@ -1,12 +1,7 @@
 package com.example.rentage_admin.acitvities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,6 +14,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.example.rentage_admin.R;
 import com.example.rentage_admin.models.CarServiceModel;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,21 +30,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 public class AddServiceActivity extends AppCompatActivity {
-
+    private static final int STORAGE_REQUEST_CODE = 400;
+    private static final int IMAGE_PICK_GALLERY_CODE = 1000;
     EditText titleService, descService, priceService;
     DatabaseReference databaseReference;
     String title, description, price;
-    Button submitButton,chooseImage;
-    String storagePermission[];
+    Button submitButton, chooseImage;
+    String[] storagePermission;
     ImageView showImage;
-
-    private static final int STORAGE_REQUEST_CODE = 400;
-    private static final int IMAGE_PICK_GALLERY_CODE = 1000;
     // storage
     private StorageReference storageReference;
     private Uri image_uri;
+
+    private ProgressDialog progressDialog;
+
+    private CarServiceModel serviceModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,19 @@ public class AddServiceActivity extends AppCompatActivity {
 
         storageReference = FirebaseStorage.getInstance().getReference(); // firebase storage reference
 
+        progressDialog = new ProgressDialog(this);
+
+
+        Intent intent = getIntent();
+        serviceModel = (CarServiceModel) intent.getSerializableExtra("edit");
+
+        if (serviceModel != null) {
+            titleService.setText(serviceModel.getTitle());
+            descService.setText(serviceModel.getDescription());
+            priceService.setText(serviceModel.getPrice());
+
+            Picasso.get().load(serviceModel.getImageUrl()).into(showImage);
+        }
 
         //storage permission
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -75,16 +92,25 @@ public class AddServiceActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                final DatabaseReference dbRef = serviceModel == null ? databaseReference.child(
+                        "Services").push() :
+                        databaseReference.child("Services").child(serviceModel.getId());
+
+                final String key = serviceModel == null ? dbRef.getKey() : serviceModel.getId();
                 title = titleService.getText().toString();
                 description = descService.getText().toString();
                 price = priceService.getText().toString();
 
-                final DatabaseReference dbRef = databaseReference.child("Services").push();
-                final String key = dbRef.getKey();
+                progressDialog.setMessage(serviceModel ==null? "Uploading data...":"Updating data" +
+                        "..." );
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
 
-                StorageReference reference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(image_uri));
 
-                if (image_uri != null) {
+
+                if (image_uri != null && serviceModel == null) {
+                    StorageReference reference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(image_uri));
                     reference.putFile(image_uri)
                             .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
@@ -96,15 +122,16 @@ public class AddServiceActivity extends AppCompatActivity {
 
                                     //getting image url
                                     CarServiceModel carServiceModel = new CarServiceModel(key, description, title,
-                                            downloadUri.toString(),price);
+                                            downloadUri.toString(), price);
 
                                     dbRef.setValue(carServiceModel).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             Intent intent = new Intent(getApplicationContext(),
                                                     ServicesActivity.class);
-                                            intent.putExtra("category", "Manage Category");
+                                            intent.putExtra("service", "Manage Service");
                                             startActivity(intent);
+                                            progressDialog.dismiss();
                                             Toast.makeText(AddServiceActivity.this, "Data uploaded successfully",
                                                     Toast.LENGTH_SHORT).show();
                                         }
@@ -113,6 +140,7 @@ public class AddServiceActivity extends AppCompatActivity {
                                         public void onFailure(@NonNull Exception e) {
                                             Toast.makeText(AddServiceActivity.this, "Data upload failed!" + e.toString(),
                                                     Toast.LENGTH_SHORT).show();
+                                            progressDialog.dismiss();
                                         }
                                     });
 
@@ -127,8 +155,31 @@ public class AddServiceActivity extends AppCompatActivity {
                                     Toast.makeText(AddServiceActivity.this, "" + exception.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
-                }
+                } else {
+                    CarServiceModel carServiceModel = new CarServiceModel(key, description, title,
+                            serviceModel.getImageUrl(), price);
 
+                    dbRef.setValue(carServiceModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Intent intent = new Intent(getApplicationContext(),
+                                    ServicesActivity.class);
+                            intent.putExtra("service", "Manage Service");
+                            startActivity(intent);
+                            progressDialog.dismiss();
+                            Toast.makeText(AddServiceActivity.this, "Data updated successfully",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(AddServiceActivity.this,
+                                    "Data update failed!" + e.toString(),
+                                    Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                        }
+                    });
+                }
 
 
             }

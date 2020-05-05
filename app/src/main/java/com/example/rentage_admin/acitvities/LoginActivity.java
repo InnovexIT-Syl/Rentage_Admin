@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.rentage_admin.R;
 
@@ -14,6 +15,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText email;
     EditText password;
     Button submit;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +33,13 @@ public class LoginActivity extends AppCompatActivity {
                 String e = email.getText().toString();
                 String p = password.getText().toString();
 
-                if (e.equals("admin@gmail.com") && p.equals("123456")) {
+                if (e.equals("admin") && p.equals("123456")) {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
+                }
+                else{
+                    Toast.makeText(LoginActivity.this, "Credential is invalid",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });

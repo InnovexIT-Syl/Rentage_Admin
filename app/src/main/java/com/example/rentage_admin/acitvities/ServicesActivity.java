@@ -35,10 +35,8 @@ public class ServicesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_services);
 
+        getSupportActionBar().setTitle("Services");
 
-        Intent intent = getIntent();
-        String name = intent.getStringExtra("service");
-        getSupportActionBar().setTitle(name);
 
         floatingActionButton = findViewById(R.id.addServiceBtn);
 
@@ -48,6 +46,7 @@ public class ServicesActivity extends AppCompatActivity {
         carServiceModels = new ArrayList<>();
 
 
+        final CarServiceAdapter adapter = new CarServiceAdapter(this, carServiceModels);
         databaseReference.child("Services").addValueEventListener(new ValueEventListener() {
 
             @Override
@@ -60,7 +59,6 @@ public class ServicesActivity extends AppCompatActivity {
                 LinearLayoutManager layoutManager =
                         new LinearLayoutManager(getApplicationContext());
                 serviceRecycle.setLayoutManager(layoutManager);
-                CarServiceAdapter adapter = new CarServiceAdapter(getApplicationContext(), carServiceModels);
                 serviceRecycle.setAdapter(adapter);
 
             }
@@ -72,6 +70,7 @@ public class ServicesActivity extends AppCompatActivity {
             }
 
         });
+
 
 
 

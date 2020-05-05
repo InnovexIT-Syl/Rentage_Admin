@@ -1,6 +1,8 @@
 package com.example.rentage_admin.models;
 
-public class CarServiceModel {
+import java.io.Serializable;
+
+public class CarServiceModel implements Serializable {
     String id;
     String description;
     String title;

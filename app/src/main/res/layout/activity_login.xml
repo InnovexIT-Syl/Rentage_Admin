@@ -10,12 +10,12 @@
     tools:context=".acitvities.LoginActivity">
 
     <EditText
-        android:hint="email"
+        android:hint="Username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/email"/>
     <EditText
-        android:hint="password"
+        android:hint="Password"
         android:inputType="textPassword"
         android:layout_marginTop="30dp"
         android:layout_width="match_parent"
