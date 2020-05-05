@@ -27,8 +27,7 @@ public class LoginActivity extends AppCompatActivity {
 
         submit = findViewById(R.id.submit);
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
+        submit.setOnClickListener(new View.OnClickListener() {@Override
             public void onClick(View v) {
                 String e = email.getText().toString();
                 String p = password.getText().toString();
